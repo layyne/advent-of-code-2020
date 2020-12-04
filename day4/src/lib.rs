@@ -11,9 +11,7 @@ pub struct Config {
 impl Config {
     pub fn new(args: &[String]) -> Result<Config, Box<dyn Error>> {
         if args.len() != 2 {
-            if args.len() != 4 {
-                return Err("Usage: cargo run <filename>".into());
-            }
+            return Err("Usage: cargo run <filename>".into());
         }
 
         let filename = args[1].clone();
