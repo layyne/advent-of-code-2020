@@ -11,7 +11,7 @@ fn main() -> Result<(), ()> {
         process::exit(1);
     });
 
-    if let Err(e) = day4::run(config) {
+    if let Err(e) = day4::run(&config) {
         println!("run() error: {}", e);
         process::exit(1);
     };

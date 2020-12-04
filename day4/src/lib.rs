@@ -22,7 +22,7 @@ impl Config {
     }
 }
 
-fn count_valid_pp_1(filename: String) -> Result<u32, Box<dyn Error>> {
+fn count_valid_pp_1(filename: &String) -> Result<u32, Box<dyn Error>> {
     let lines = read_lines(filename)?;
     let mut field_count = 0;
     let mut valid_count = 0;
@@ -64,7 +64,7 @@ fn count_valid_pp_1(filename: String) -> Result<u32, Box<dyn Error>> {
     Ok(valid_count)
 }
 
-fn count_valid_pp_2(filename: String) -> Result<u32, Box<dyn Error>> {
+fn count_valid_pp_2(filename: &String) -> Result<u32, Box<dyn Error>> {
     let lines = read_lines(filename)?;
     let mut field_count = 0;
     let mut valid_count = 0;
@@ -198,15 +198,15 @@ where
     Ok(io::BufReader::new(file).lines())
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     println!(
         "The number of valid passports for part 1 is {}",
-        count_valid_pp_1(config.filename.clone())?,
+        count_valid_pp_1(&config.filename)?,
     );
 
     println!(
         "The number of valid passports for part 2 is {}",
-        count_valid_pp_2(config.filename)?,
+        count_valid_pp_2(&config.filename)?,
     );
 
     Ok(())
