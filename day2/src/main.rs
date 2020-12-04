@@ -5,7 +5,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() != 2 {
-        panic!("Usage: ./{} <filename>", args[0]);
+        panic!("Usage: cargo run <filename>");
     }
 
     println!(
