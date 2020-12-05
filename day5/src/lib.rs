@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 use std::result::Result;
-use std::{collections::HashSet, error::Error};
+use std::error::Error;
 
 pub struct Config {
     filename: String,
@@ -63,11 +63,11 @@ fn find_max_seat_id(filename: &String) -> Result<u32, Box<dyn Error>> {
     Ok(max)
 }
 
-fn find_missing(filename: &String) -> Result<u32, Box<dyn Error>> {
+fn find_missing(filename: &String) -> Result<i32, Box<dyn Error>> {
     let lines = read_lines(filename)?;
-    let mut max: u32 = 0;
-    let mut min: u32 = 127 * 8 + 7;
-    let mut table: HashSet<u32> = HashSet::new();
+    let mut max: i32 = 0;
+    let mut min: i32 = 127 * 8 + 7;
+    let mut vec: Vec<i32> = Vec::new();
 
     for line in lines {
         let mut range: (u8, u8) = (0, 127);
@@ -84,7 +84,7 @@ fn find_missing(filename: &String) -> Result<u32, Box<dyn Error>> {
             }
         }
 
-        let row = range.0 as u32;
+        let row = range.0 as i32;
 
         range = (0, 7);
 
@@ -96,7 +96,7 @@ fn find_missing(filename: &String) -> Result<u32, Box<dyn Error>> {
             }
         }
 
-        let col = range.0 as u32;
+        let col = range.0 as i32;
 
         let seat_id = row * 8 + col;
 
@@ -106,16 +106,19 @@ fn find_missing(filename: &String) -> Result<u32, Box<dyn Error>> {
             min = seat_id;
         }
 
-        table.insert(seat_id);
+        vec.push(seat_id);
     }
+
+    // Avoid overflow, sum all numbers in min+1..max+1 and find which num is missing
+
+    let mut sum = min;
 
     for i in min..max {
-        if !table.contains(&i) {
-            return Ok(i);
-        }
+        sum += i + 1;
+        sum -= vec.get((i - min) as usize).expect("out of vec bounds");
     }
 
-    Ok(0)
+    Ok(sum)
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
