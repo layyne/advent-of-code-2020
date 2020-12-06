@@ -1,8 +1,8 @@
+use std::error::Error;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 use std::result::Result;
-use std::error::Error;
 
 pub struct Config {
     filename: String,
@@ -135,10 +135,7 @@ pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
         find_max_seat_id(&config.filename)?,
     );
 
-    println!(
-        "The missing seat ID is {}",
-        find_missing(&config.filename)?,
-    );
+    println!("The missing seat ID is {}", find_missing(&config.filename)?,);
 
     Ok(())
 }
