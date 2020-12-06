@@ -64,26 +64,18 @@ fn count_yes(filename: &String) -> Result<i32, Box<dyn Error>> {
     Ok(total)
 }
 
-fn count_unanimous(filename: &String) -> Result<i32, Box<dyn Error>> {
+fn count_unanimous(filename: &String) -> Result<u32, Box<dyn Error>> {
     let lines = read_lines(filename)?;
-    let mut questions: [i32; 26] = [0; 26];
-    let mut count = 0;
+    let mut questions: [u32; 26] = [0; 26];
     let mut total = 0;
     let mut ppl = 0;
 
     for line in lines {
         let cur = line?;
 
-        if cur.len() == 0 {
-            for i in questions.iter() {
-                if *i == ppl {
-                    count += 1;
-                }
-            }
+        if cur == "" {
+            total += questions.iter().filter(|&q| *q == ppl).count();
 
-            total += count;
-
-            count = 0;
             ppl = 0;
             questions = [0; 26];
 
@@ -98,17 +90,9 @@ fn count_unanimous(filename: &String) -> Result<i32, Box<dyn Error>> {
         ppl += 1;
     }
 
-    count = 0;
+    total += questions.iter().filter(|&q| *q == ppl).count();
 
-    for i in questions.iter() {
-        if *i == ppl {
-            count += 1;
-        }
-    }
-
-    total += count;
-
-    Ok(total)
+    Ok(total as u32)
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
