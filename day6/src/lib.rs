@@ -20,52 +20,37 @@ impl Config {
     }
 }
 
-fn count_yes(filename: &String) -> Result<i32, Box<dyn Error>> {
+fn count_yes(filename: &String) -> Result<u32, Box<dyn Error>> {
     let lines = read_lines(filename)?;
-    let mut questions: [bool; 26] = [false; 26];
-    let mut count: i32;
+    
+    let mut questions_int: u32 = 0;
     let mut total = 0;
 
     for line in lines {
         let cur = line?;
 
-        if cur.len() == 0 {
-            count = 0;
+        if cur == "" {
+            total += questions_int.count_ones();
 
-            for i in questions.iter() {
-                if *i {
-                    count += 1;
-                }
-            }
-
-            total += count;
-
-            questions = [false; 26];
+            questions_int = 0;
 
             continue;
         }
 
         for c in cur.chars() {
             let index = c as u8 - 'a' as u8;
-            questions[index as usize] = true;
+            questions_int |= 1 << index;
         }
     }
 
-    count = 0;
+    total += questions_int.count_ones();
 
-    for i in questions.iter() {
-        if *i {
-            count += 1;
-        }
-    }
-
-    total += count;
-
-    Ok(total)
+    Ok(total as u32)
 }
 
 fn count_unanimous(filename: &String) -> Result<u32, Box<dyn Error>> {
     let lines = read_lines(filename)?;
+
     let mut questions: [u32; 26] = [0; 26];
     let mut total = 0;
     let mut ppl = 0;
@@ -74,7 +59,7 @@ fn count_unanimous(filename: &String) -> Result<u32, Box<dyn Error>> {
         let cur = line?;
 
         if cur == "" {
-            total += questions.iter().filter(|&q| *q == ppl).count();
+            total += questions.iter().filter(|&&q| q == ppl).count();
 
             ppl = 0;
             questions = [0; 26];
