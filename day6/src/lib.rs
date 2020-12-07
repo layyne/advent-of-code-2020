@@ -22,28 +22,28 @@ impl Config {
 
 fn count_yes(filename: &String) -> Result<u32, Box<dyn Error>> {
     let lines = read_lines(filename)?;
-    
-    let mut questions_int: u32 = 0;
+
+    let mut questions: u32 = 0;
     let mut total = 0;
 
     for line in lines {
         let cur = line?;
 
         if cur == "" {
-            total += questions_int.count_ones();
+            total += questions.count_ones();
 
-            questions_int = 0;
+            questions = 0;
 
             continue;
         }
 
         for c in cur.chars() {
             let index = c as u8 - 'a' as u8;
-            questions_int |= 1 << index;
+            questions |= 1 << index;
         }
     }
 
-    total += questions_int.count_ones();
+    total += questions.count_ones();
 
     Ok(total as u32)
 }
@@ -75,7 +75,7 @@ fn count_unanimous(filename: &String) -> Result<u32, Box<dyn Error>> {
         ppl += 1;
     }
 
-    total += questions.iter().filter(|&q| *q == ppl).count();
+    total += questions.iter().filter(|&&q| q == ppl).count();
 
     Ok(total as u32)
 }
